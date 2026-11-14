@@ -45,7 +45,7 @@ This project includes:
 
 Files used: `plist_roster`, `sec_2ab_education`, `sec_1b_emp_income`, `Sec_04a_pregnancyhistory`, `sec_05m1_housingchar`. The item-level consumption file is deliberately **not** used (group-total codes are mixed in, so summing it risks double counting). Full column list and verification status: [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md).
 
-> No simulated or synthetic data is used in any analysis. Unit tests build tiny in-memory fixtures that never touch `data/` or `out/`, and the pipeline refuses paths under `tests/` or filenames containing "synthetic", "simulated", "fake" or "dummy".
+> No simulated or synthetic data is used in any analysis. 
 
 ---
 
