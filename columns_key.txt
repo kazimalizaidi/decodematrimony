@@ -1,0 +1,105 @@
+
+=== sec_6a_consum_exp  rows=2396159
+  prcode          
+  hhno            
+  province        
+  region          
+  quater          
+  itc             
+  pp              
+  unit            
+  q1              
+  v1              
+  q2              
+  v2              
+  q3              
+  v3              
+  q4              
+  v4              
+  hhcode          
+--- first 3 rows ---
+     prcode  hhno  province  region  quater   itc  pp  unit  q1       v1  q2  v2  q3  v3  q4      v4        hhcode
+0  11021001     1         1       2       1  1000 NaN   NaN NaN   4910.0 NaN NaN NaN NaN NaN     NaN  1.102100e+10
+1  11021001     1         1       2       1  2000 NaN   NaN NaN  11430.0 NaN NaN NaN NaN NaN     NaN  1.102100e+10
+2  11021001     1         1       2       1  4000 NaN   NaN NaN   4700.0 NaN NaN NaN NaN NaN  1400.0  1.102100e+10
+
+=== sec_05m1_housingchar  rows=30123
+  prcode          
+  hhno            
+  province        
+  region          
+  quarter         
+  s5m1q01         what is your present occupancy status?
+  s5m1q02         gender of owner
+  s5m1q03         what is the dwelling type?
+  s5m1q03ot       
+  s5m1q04         how many rooms are there in this residential building?
+  s5m1q05         which main material is used for floor? 
+  s5m1q05ot       
+  s5m1q06         which main material is used for roof?
+  s5m1q06ot       
+  s5m1q07         which main material is used for walls? 
+  s5m1q07ot       
+  s5m1q08         what is the main fuel used for cooking?
+  s5m1q08ot       
+  s5m1q09         what is the main fuel used for heating?
+  s5m1q09ot       
+  s5m1q10         what is main fuel used for lighting?
+  s5m1q10ot       
+  s5m1q111a       does this household have internet facility? yes=1 and no=2
+  s5m1q111b       number of internet connections
+  s5m1q112a       does this household have mobile phone (simple) facility? yes=1 and no=2
+  s5m1q112b       number/quantity?
+  s5m1q113a        does this household have smart phone facility?
+  s5m1q113b       number/quantity?
+  s5m1q114a         does this household have landline/wireless phone facility? yes=1 and no=2
+  s5m1q114b       number/quantity?
+  s5m1q115a         does this household have computer desktopsfacility? yes=1 and no=2
+  s5m1q115b       number/quantity?
+  s5m1q116a         does this household have laptop/notebook facility? yes=1 and no=2
+  s5m1q116b       number/quantity?
+  s5m1q117a         does this household have tablet/i-pad facility? yes=1 and no=2
+  s5m1q117b       number/quantity?
+  s5m1q118a         does this household have radio? yes=1 and no=2
+  s5m1q118b       number/quantity?
+  s5m1q119a         does this household have television? yes=1 and no=2
+  s5m1q119b       number/quantity
+  s5m1q11b1       cable tv(catv)
+  s5m1q11b2       direct-to-home (dth) satellite services
+  s5m1q11b3       internet-protocoltv (iptv)
+  s5m1q11b4       dogital terrestrial tv(dtt)
+  s5m1q121a        what type/s of internet services are used for internet access at home cable/wir
+  s5m1q121b       no of connections
+  s5m1q122a       what type/s of internet services are used for internet access at home wireless p
+  s5m1q122b       no of connections
+  s5m1q123a        what type/s of internet services are used for internet access at home, mobile c
+  s5m1q123b       no of connections
+  s5m1q131        do not need the internet 
+  s5m1q132        have access to the internet elsewhere
+  s5m1q133        cost of the equipment is too high 
+  s5m1q134        cost of the service is too high 
+  s5m1q135         privacy or security concerns 
+  s5m1q136        internet service is not available in the area 
+  s5m1q137         internet service is available but it does not correspond to household needs (e.
+  s5m1q138        cultural reasons (e.g. exposure to harmful content)
+  s5m1q139         no electricity in the household 
+  s5m1q1310       other reason, specify 
+  s5m1q1310t      
+  s5m1q14         during the last 30 days has this household been visited by lady health visitor (
+  s5m1q15a        is there all-season road near your house?
+  s5m1q15b        if yes in 15a then how far it is in km? 
+  s5m1q161a        bus/van/ suzuki etc
+  s5m1q161b       distance in kms
+  s5m1q161c       can you have  access public transport by walk?
+  s5m1q162a        metro/ orange line 
+  s5m1q162b       distance in kms
+  s5m1q162c       can you have  access public transport by walk?
+  s5m1q163a       train (inter city )
+  s5m1q163b       distance in kms
+  s5m1q163c       can you have  access public transport by walk?
+  hhcode          
+--- first 3 rows ---
+     prcode  hhno  province  region  quarter  s5m1q01  s5m1q02  s5m1q03 s5m1q03ot  s5m1q04  s5m1q05 s5m1q05ot  s5m1q06 s5m1q06ot  s5m1q07 s5m1q07ot  s5m1q08 s5m1q08ot  s5m1q09 s5m1q09ot  s5m1q10 s5m1q10ot  s5m1q111a  s5m1q111b  s5m1q112a  s5m1q112b  s5m1q113a  s5m1q113b  s5m1q114a  s5m1q114b  s5m1q115a  s5m1q115b  s5m1q116a  s5m1q116b  s5m1q117a  s5m1q117b  s5m1q118a  s5m1q118b  s5m1q119a  s5m1q119b  s5m1q11b1  s5m1q11b2  s5m1q11b3  s5m1q11b4  s5m1q121a  s5m1q121b  s5m1q122a  s5m1q122b  s5m1q123a  s5m1q123b  s5m1q131  s5m1q132  s5m1q133  s5m1q134  s5m1q135  s5m1q136  s5m1q137  s5m1q138  s5m1q139  s5m1q1310 s5m1q1310t  s5m1q14  s5m1q15a  s5m1q15b  s5m1q161a  s5m1q161b  s5m1q161c  s5m1q162a  s5m1q162b  s5m1q162c  s5m1q163a  s5m1q163b  s5m1q163c        hhcode
+0  11021001     1         1       2        1        1        1        1      NULL        2        3      NULL        4      NULL        5      NULL        1      NULL       11        13        1      NULL          2        NaN          1        1.0          2        NaN          2        NaN          2        NaN          2        NaN          2        NaN          2        NaN          2        NaN        NaN        NaN        NaN        NaN        NaN        NaN        NaN        NaN        NaN        NaN       1.0       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN        NaN       NULL        2         1       1.0        1.0        1.0        1.0        2.0        NaN        NaN        2.0        NaN        NaN  1.102100e+10
+1  11021001    12         1       2        1        1        1        1      NULL        5        1      NULL        3      NULL        2      NULL        1      NULL        5      NULL        1      NULL          1        1.0          1        2.0          1        4.0          2        NaN          2        NaN          2        NaN          2        NaN          2        NaN          2        NaN        NaN        NaN        NaN        NaN        NaN        NaN        NaN        NaN        NaN        NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN       NaN        NaN       NULL        2         1       1.0        1.0        1.0        2.0        2.0        NaN        NaN        2.0        NaN        NaN  1.102100e+10
+2  11021001    21         1       2        1        1        1        1      NULL        5        3      NULL        4      NULL        1      NULL        1      NULL       11         2        1      NULL          2        NaN          1        2.0          2        NaN          2        NaN          2        NaN          2        NaN          2        NaN          2        NaN          2        NaN        NaN        NaN        NaN        NaN        NaN        NaN        NaN        NaN        NaN        NaN       NaN       2.0       NaN       NaN       NaN       NaN       NaN       NaN       NaN        NaN       NULL        2         1       1.0        1.0        1.0        1.0        2.0        NaN        NaN        2.0        NaN        NaN  1.102100e+10

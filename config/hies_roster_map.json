@@ -1,0 +1,16 @@
+{
+  "household_id": "hh_id", "person_line": "idc", "relationship": "s1aq02", "sex": "s1aq03",
+  "age": "s1aq51", "education": "edu_code", "weight": "weight",
+  "psu": "prcode", "strata": "stratum", "region": "province",
+  "head_code": 1, "spouse_code": 2, "male_code": 1, "female_code": 2,
+  "edu_recode": {"0": 0, "25": 0, "26": 0, "27": 0,
+                 "1": 1, "2": 1, "3": 1, "4": 1, "5": 1,
+                 "6": 2, "7": 2, "8": 2, "9": 2, "10": 2, "12": 2,
+                 "11": 3, "13": 3, "14": 3, "15": 3, "16": 3, "17": 3, "18": 3, "19": 3,
+                 "20": 3, "21": 3, "22": 3, "23": 3, "24": 3},
+  "wealth_quintile": "wealth_quintile",
+  "working": "s1bq01", "working_yes_code": 1,
+  "wife_age_first_union": "s4aq04",
+  "marital_status": "s1aq06", "married_codes": [2],
+  "region_labels": {"1": "khyber pakhtunkhwa", "2": "punjab", "3": "sindh", "4": "balochistan"}
+}

@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DecodeMatrimony</title>
+<meta name="description" content="A survey-weighted analytics engine for the Pakistani marriage market, built on PBS HIES 2024-25.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Ccircle cx='74' cy='60' r='30' fill='none' stroke='%238c68cf' stroke-width='9'/%3E%3Ccircle cx='46' cy='60' r='30' fill='none' stroke='%23d95685' stroke-width='9'/%3E%3C/svg%3E">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Plus Jakarta Sans', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'], mono: ['JetBrains Mono', 'ui-monospace', 'monospace'] },
+        colors: {
+          pookie: { 50: '#fdf2f6', 100: '#fce7ef', 200: '#f9cfdf', 300: '#f3a9c4', 400: '#e97ba3', 500: '#d95685' },
+          lilac:  { 50: '#f7f4fd', 100: '#ede7fa', 200: '#dcd0f5', 300: '#c3b0ec', 400: '#a78bdf', 500: '#8c68cf' },
+          sage:   { 50: '#f3f8f4', 100: '#e2efe5', 200: '#c5dfcb', 300: '#9cc6a5', 400: '#6fa97c', 500: '#4f8a5d' },
+          ink:    { 50: '#f8fafc', 100: '#f1f5f9', 200: '#e2e8f0', 300: '#cbd5e1', 400: '#94a3b8', 500: '#64748b', 600: '#475569', 700: '#334155', 800: '#1e293b', 900: '#0f172a' }
+        },
+        boxShadow: { soft: '0 1px 2px rgba(15,23,42,.04), 0 8px 24px -8px rgba(15,23,42,.08)' }
+      }
+    }
+  }
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  .dot-grid {
+    background-image: radial-gradient(rgba(148,163,184,.45) 1px, transparent 1px);
+    background-size: 18px 18px;
+    -webkit-mask-image: radial-gradient(70% 70% at 50% 50%, #000 30%, transparent 100%);
+            mask-image: radial-gradient(70% 70% at 50% 50%, #000 30%, transparent 100%);
+  }
+  .float-slow { animation: floatY 7s ease-in-out infinite; }
+  .float-slower { animation: floatY 9s ease-in-out infinite reverse; }
+  @keyframes floatY { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  .logo-ring-pulse { animation: ringPulse 5s ease-in-out infinite; transform-origin: center; }
+  @keyframes ringPulse { 0%,100% { opacity: .55; transform: scale(1); } 50% { opacity: .15; transform: scale(1.06); } }
+  body { background: #f8fafc; }
+  .hero-glow {
+    background:
+      radial-gradient(60% 50% at 15% 0%, rgba(249,207,223,.55) 0%, rgba(249,207,223,0) 70%),
+      radial-gradient(50% 45% at 90% 10%, rgba(220,208,245,.55) 0%, rgba(220,208,245,0) 70%),
+      radial-gradient(40% 40% at 50% 100%, rgba(197,223,203,.35) 0%, rgba(197,223,203,0) 70%);
+  }
+  .tab-btn[aria-selected="true"] { background: #fff; border-color: #e2e8f0; box-shadow: 0 1px 2px rgba(15,23,42,.05), 0 6px 16px -8px rgba(15,23,42,.12); }
+  .tab-btn[aria-selected="true"] .tab-num { background: #f3a9c4; color: #fff; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeUp .35s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .md-body h4 { font-weight: 700; color: #1e293b; margin: 1.1rem 0 .35rem; font-size: .95rem; }
+  .md-body h4:first-child { margin-top: 0; }
+  .md-body p, .md-body li { color: #475569; font-size: .875rem; line-height: 1.65; }
+  .md-body ul { list-style: none; padding: 0; margin: 0; }
+  .md-body li { position: relative; padding-left: 1.1rem; margin: .3rem 0; }
+  .md-body li::before { content: ""; position: absolute; left: 0; top: .7em; width: 6px; height: 6px; border-radius: 9999px; background: #e97ba3; }
+  .md-body code { font-family: 'JetBrains Mono', monospace; font-size: .78rem; background: #f1f5f9; border: 1px solid #e2e8f0; padding: .08rem .35rem; border-radius: .35rem; color: #334155; }
+  .pipe-arrow { background-image: linear-gradient(90deg, #cbd5e1 50%, transparent 50%); background-size: 8px 2px; background-repeat: repeat-x; }
+  :focus-visible { outline: 2px solid #c3b0ec; outline-offset: 2px; border-radius: .5rem; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+
+<body class="font-sans text-ink-700 antialiased">
+
+<!-- Logo definition: two interlocked rings (a couple), a shared lens (the pairing), and a 95% CI whisker (the inference) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="dm-g-a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3a9c4"/><stop offset="1" stop-color="#d95685"/></linearGradient>
+    <linearGradient id="dm-g-b" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c3b0ec"/><stop offset="1" stop-color="#8c68cf"/></linearGradient>
+    <linearGradient id="dm-g-l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9cc6a5"/><stop offset="1" stop-color="#4f8a5d"/></linearGradient>
+    <clipPath id="dm-clip-a"><circle cx="46" cy="60" r="30"/></clipPath>
+    <clipPath id="dm-clip-w"><circle cx="60" cy="86.5" r="9"/></clipPath>
+    <symbol id="dm-logo" viewBox="0 0 120 120">
+      <circle cx="74" cy="60" r="30" fill="url(#dm-g-l)" fill-opacity=".4" clip-path="url(#dm-clip-a)"/>
+      <circle cx="74" cy="60" r="30" fill="none" stroke="url(#dm-g-b)" stroke-width="7"/>
+      <circle cx="46" cy="60" r="30" fill="none" stroke="url(#dm-g-a)" stroke-width="7"/>
+      <circle cx="74" cy="60" r="30" fill="none" stroke="url(#dm-g-b)" stroke-width="7" clip-path="url(#dm-clip-w)"/>
+      <g stroke="#1e293b" stroke-width="3" stroke-linecap="round" fill="none">
+        <line x1="60" y1="47" x2="60" y2="73"/>
+        <line x1="54" y1="47" x2="66" y2="47"/>
+        <line x1="54" y1="73" x2="66" y2="73"/>
+        <circle cx="60" cy="60" r="4" fill="#fff"/>
+      </g>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- NAV -->
+<header class="sticky top-0 z-40 backdrop-blur bg-white/75 border-b border-ink-200">
+  <div class="max-w-6xl mx-auto px-5 h-14 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-2 font-extrabold tracking-tight text-ink-900">
+      <svg class="h-8 w-8" viewBox="0 0 120 120" aria-hidden="true"><use href="#dm-logo"/></svg>
+      DecodeMatrimony
+    </a>
+    <nav class="hidden sm:flex items-center gap-6 text-sm font-medium text-ink-500">
+      <a class="hover:text-ink-900 transition" href="#tier1">Summary</a>
+      <a class="hover:text-ink-900 transition" href="#tier2">Lenses</a>
+      <a class="hover:text-ink-900 transition" href="#tier3">Architecture</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero-glow border-b border-ink-200">
+  <div class="max-w-6xl mx-auto px-5 pt-16 pb-14 sm:pt-24 sm:pb-20 grid lg:grid-cols-[1.2fr_1fr] gap-12 items-center">
+   <div>
+    <p class="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[.18em] text-lilac-500">
+      Survey-weighted analytics engine
+    </p>
+    <h1 class="mt-4 text-5xl sm:text-7xl font-extrabold tracking-tight text-ink-900">
+      Decode<span class="bg-gradient-to-r from-pookie-400 to-lilac-400 bg-clip-text text-transparent">Matrimony</span>
+    </h1>
+    <p class="mt-5 max-w-2xl text-lg sm:text-xl text-ink-600 leading-relaxed">
+      A survey-weighted statistical pipeline and results explorer for the Pakistani marriage market, built on household microdata.
+    </p>
+
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a href="#tier2" class="inline-flex items-center gap-2 rounded-xl bg-ink-900 text-white px-5 py-3 text-sm font-semibold hover:bg-ink-800 transition">
+        Explore the lenses <i data-lucide="arrow-down" class="h-4 w-4"></i>
+      </a>
+      <a href="#tier3" class="inline-flex items-center gap-2 rounded-xl bg-white border border-ink-200 text-ink-700 px-5 py-3 text-sm font-semibold hover:border-ink-300 transition">
+        Read the methodology <i data-lucide="book-open" class="h-4 w-4"></i>
+      </a>
+    </div>
+   </div>
+
+   <!-- Brand panel -->
+   <div class="hidden lg:flex justify-center">
+     <svg class="float-slow h-64 w-64 drop-shadow-[0_18px_28px_rgba(140,104,207,.25)]" viewBox="0 0 120 120" role="img" aria-label="DecodeMatrimony logo: two interlocked rings with a confidence interval mark in the overlap">
+       <use href="#dm-logo"/>
+     </svg>
+   </div>
+  </div>
+</section>
+
+<!-- TIER 1 -->
+<section id="tier1" class="max-w-6xl mx-auto px-5 py-16">
+  <div class="flex items-end justify-between flex-wrap gap-3 mb-8">
+    <div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-ink-900">Executive summary</h2>
+    </div>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <article class="rounded-2xl bg-white border border-ink-200 p-5 shadow-soft">
+      <div class="h-10 w-10 rounded-xl bg-pookie-100 text-pookie-500 flex items-center justify-center"><i data-lucide="users" class="h-5 w-5"></i></div>
+      <p class="mt-4 text-3xl font-extrabold tracking-tight text-ink-900"><span>24,628</span></p>
+      <p class="mt-1 text-sm font-semibold text-ink-700">Head-spouse pairs</p>
+      <p class="mt-1 text-xs text-ink-500 leading-relaxed">Weighted analytical sample of couples in PBS HIES 2024-25.</p>
+    </article>
+
+    <article class="rounded-2xl bg-white border border-ink-200 p-5 shadow-soft">
+      <div class="h-10 w-10 rounded-xl bg-lilac-100 text-lilac-500 flex items-center justify-center"><i data-lucide="trending-up" class="h-5 w-5"></i></div>
+      <p class="mt-4 text-3xl font-extrabold tracking-tight text-ink-900">0.082</p>
+      <p class="mt-1 text-sm font-semibold text-ink-700">Spearman, wealth vs age gap</p>
+      <p class="mt-1 text-xs text-ink-500 leading-relaxed">A weak positive rank association (95% CI 0.068 to 0.096, n = 24,627) between household wealth and spousal age gap.</p>
+    </article>
+
+    <article class="rounded-2xl bg-white border border-ink-200 p-5 shadow-soft">
+      <div class="h-10 w-10 rounded-xl bg-sage-100 text-sage-500 flex items-center justify-center"><i data-lucide="repeat" class="h-5 w-5"></i></div>
+      <p class="mt-4 text-3xl font-extrabold tracking-tight text-ink-900">1,000</p>
+      <p class="mt-1 text-sm font-semibold text-ink-700">Rao-Wu bootstrap draws</p>
+      <p class="mt-1 text-xs text-ink-500 leading-relaxed">PSUs resampled within strata to respect the survey design for every interval.</p>
+    </article>
+
+    <article class="rounded-2xl bg-white border border-ink-200 p-5 shadow-soft">
+      <div class="h-10 w-10 rounded-xl bg-ink-100 text-ink-600 flex items-center justify-center"><i data-lucide="fingerprint" class="h-5 w-5"></i></div>
+      <p class="mt-4 text-3xl font-extrabold tracking-tight text-ink-900">SHA-256</p>
+      <p class="mt-1 text-sm font-semibold text-ink-700">Robust lineage verification</p>
+      <p class="mt-1 text-xs text-ink-500 leading-relaxed">Every source file is hash-tracked, so each run is tied to the exact bytes it ingested.</p>
+    </article>
+  </div>
+</section>
+
+<!-- TIER 2 -->
+<section id="tier2" class="bg-white border-y border-ink-200">
+  <div class="max-w-6xl mx-auto px-5 py-16">
+    <div class="mb-8">
+      <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-ink-900">Interactive analytical lenses</h2>
+      <p class="mt-2 text-sm text-ink-500 max-w-2xl">Pre-rendered results from the engine, drawn client-side. Hover any mark for exact estimates. Whiskers appear only where a 95% interval was reported.</p>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-[260px_1fr]">
+      <!-- Tabs -->
+      <div role="tablist" aria-label="Analytical lenses" aria-orientation="vertical" class="flex lg:flex-col gap-2 overflow-x-auto rounded-2xl bg-ink-100 p-2 border border-ink-200 self-start lg:w-full">
+        <button role="tab" id="tab-1" aria-controls="panel-1" aria-selected="true" tabindex="0" class="tab-btn shrink-0 text-left flex items-start gap-3 rounded-xl border border-transparent px-3.5 py-3 transition">
+          <span class="tab-num mt-0.5 h-6 w-6 shrink-0 rounded-lg bg-ink-200 text-ink-600 text-xs font-bold flex items-center justify-center transition">1</span>
+          <span><span class="block text-sm font-bold text-ink-900">Regional disparities</span><span class="block text-xs text-ink-500">Hypergamy vs hypogamy</span></span>
+        </button>
+        <button role="tab" id="tab-2" aria-controls="panel-2" aria-selected="false" tabindex="-1" class="tab-btn shrink-0 text-left flex items-start gap-3 rounded-xl border border-transparent px-3.5 py-3 transition">
+          <span class="tab-num mt-0.5 h-6 w-6 shrink-0 rounded-lg bg-ink-200 text-ink-600 text-xs font-bold flex items-center justify-center transition">2</span>
+          <span><span class="block text-sm font-bold text-ink-900">Age-gap gradient</span><span class="block text-xs text-ink-500">Education and wealth</span></span>
+        </button>
+        <button role="tab" id="tab-3" aria-controls="panel-3" aria-selected="false" tabindex="-1" class="tab-btn shrink-0 text-left flex items-start gap-3 rounded-xl border border-transparent px-3.5 py-3 transition">
+          <span class="tab-num mt-0.5 h-6 w-6 shrink-0 rounded-lg bg-ink-200 text-ink-600 text-xs font-bold flex items-center justify-center transition">3</span>
+          <span><span class="block text-sm font-bold text-ink-900">Workforce intricacies</span><span class="block text-xs text-ink-500">Wife working by pairing</span></span>
+        </button>
+      </div>
+
+      <!-- Panels -->
+      <div>
+        <!-- Lens 1 -->
+        <div role="tabpanel" id="panel-1" aria-labelledby="tab-1" class="tab-panel active rounded-2xl border border-ink-200 bg-ink-50 p-5 sm:p-7">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-extrabold text-ink-900">Regional educational disparities</h3>
+              <p class="text-sm text-ink-500 mt-1 max-w-xl">Share of couples where the husband is more educated (hypergamy) versus the wife (hypogamy), by province.</p>
+            </div>
+            <span class="rounded-full bg-pookie-100 text-pookie-500 text-[11px] font-bold px-3 py-1">Weighted shares, %</span>
+          </div>
+          <div class="mt-5 h-80 sm:h-96"><canvas id="chart-region" aria-label="Grouped bar chart of hypergamy and hypogamy rates by province" role="img"></canvas></div>
+          <div class="mt-5 grid sm:grid-cols-2 gap-3">
+            <div class="rounded-xl bg-white border border-ink-200 p-4">
+              <p class="text-xs font-bold uppercase tracking-wider text-pookie-400">Highest hypergamy</p>
+              <p class="mt-1 text-sm text-ink-600"><b class="text-ink-900">Khyber Pakhtunkhwa, 50.0%</b> (95% CI 47.9 to 52.1). Punjab sits lowest at 39.2%.</p>
+            </div>
+            <div class="rounded-xl bg-white border border-ink-200 p-4">
+              <p class="text-xs font-bold uppercase tracking-wider text-lilac-500">Highest hypogamy</p>
+              <p class="mt-1 text-sm text-ink-600"><b class="text-ink-900">Punjab, 11.9%</b> (95% CI 11.2 to 12.5). Balochistan sits lowest at 2.3%.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lens 2 -->
+        <div role="tabpanel" id="panel-2" aria-labelledby="tab-2" class="tab-panel rounded-2xl border border-ink-200 bg-ink-50 p-5 sm:p-7">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-extrabold text-ink-900">The age-gap gradient</h3>
+              <p class="text-sm text-ink-500 mt-1 max-w-xl">Weighted mean husband-minus-wife age gap across four education tiers, and the share of large gaps across wealth quintiles.</p>
+            </div>
+            <span class="rounded-full bg-lilac-100 text-lilac-500 text-[11px] font-bold px-3 py-1">Weighted mean, years</span>
+          </div>
+          <div class="mt-5 h-72 sm:h-80"><canvas id="chart-agegap" aria-label="Line chart of weighted mean age gap by education level" role="img"></canvas></div>
+
+          <div class="mt-7 border-t border-ink-200 pt-6">
+            <h4 class="text-sm font-bold text-ink-900">Age gap of 10+ years by wealth quintile</h4>
+            <p class="text-xs text-ink-500 mt-1">All five wealth quintiles, with 95% intervals.</p>
+            <div class="mt-4 h-56"><canvas id="chart-wealth" aria-label="Bar chart of share of couples with a 10 plus year age gap by wealth quintile" role="img"></canvas></div>
+          </div>
+          <div class="mt-5 rounded-xl bg-white border border-ink-200 p-4 text-sm text-ink-600">
+            Mean gaps are 4.37 years with no education and 5.09 at secondary, but intervals overlap between primary and higher, and after adjusting for wife age band and province the education effect is small (table below). Large gaps become more common with wealth, consistent with the weak Spearman of 0.082.
+          </div>
+          <div id="adj-table" class="mt-5 overflow-x-auto"></div>
+        </div>
+
+        <!-- Lens 3 -->
+        <div role="tabpanel" id="panel-3" aria-labelledby="tab-3" class="tab-panel rounded-2xl border border-ink-200 bg-ink-50 p-5 sm:p-7">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-extrabold text-ink-900">Workforce intricacies</h3>
+              <p class="text-sm text-ink-500 mt-1 max-w-xl">Share of wives who work, by the educational pairing type of the couple.</p>
+            </div>
+            <span class="rounded-full bg-sage-100 text-sage-500 text-[11px] font-bold px-3 py-1">Weighted shares, %</span>
+          </div>
+          <div class="mt-5 h-72 sm:h-80"><canvas id="chart-work" aria-label="Bar chart of wife working share by pairing type" role="img"></canvas></div>
+          <div class="mt-5 grid sm:grid-cols-3 gap-3" id="work-cards"></div>
+          <p class="mt-4 text-xs text-ink-500">Associations are cross-sectional and do not establish that pairing type causes labour-force participation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIER 3 -->
+<section id="more" class="max-w-6xl mx-auto px-5 py-16">
+  <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-ink-900">More findings and the Mahr benchmark</h2>
+  <p class="mt-2 max-w-2xl text-sm text-ink-500">Education pairing across wealth, a derived gold and CPI benchmark, and the remaining headline estimates, all with 95% intervals where the pipeline reports them.</p>
+  <div class="mt-8 grid gap-5 lg:grid-cols-2">
+    <article class="rounded-2xl bg-white border border-ink-200 p-6 shadow-soft">
+      <h3 class="font-extrabold text-ink-900">Education pairing by household wealth</h3>
+      <p class="text-xs text-ink-500 mt-1">Shares of couples by wealth quintile. Wife-more-educated is derived as 100 minus the other two (no interval).</p>
+      <div class="mt-4 h-72"><canvas id="chart-wealthpair" role="img" aria-label="Stacked bars of education pairing type by wealth quintile"></canvas></div>
+    </article>
+    <article class="rounded-2xl bg-white border border-ink-200 p-6 shadow-soft">
+      <h3 class="font-extrabold text-ink-900">Derived Mahr benchmark, 2026 (Jan = 100)</h3>
+      <p class="text-xs text-ink-500 mt-1">Built from month-end gold quotes and CPI. Not observed Mahr values, and ten months cannot show an inflation trend.</p>
+      <div class="mt-4 h-72"><canvas id="chart-mahr" role="img" aria-label="Line chart of gold index, CPI index and gold divided by CPI, January to October 2026"></canvas></div>
+    </article>
+  </div>
+  <div class="mt-5 grid gap-3 sm:grid-cols-3" id="more-cards"></div>
+</section>
+
+<section id="tier3" class="max-w-6xl mx-auto px-5 py-16">
+  <div class="mb-10">
+    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-ink-900">Rigor and integrity deep-dive</h2>
+    <p class="mt-2 text-sm text-ink-500 max-w-2xl">How the numbers are produced, where they stop being reliable, and how the pipeline keeps itself honest.</p>
+  </div>
+
+  <!-- Math -->
+  <div class="grid gap-5 lg:grid-cols-2">
+    <article class="rounded-2xl bg-white border border-ink-200 p-6 shadow-soft">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-xl bg-lilac-100 text-lilac-500 flex items-center justify-center"><i data-lucide="sigma" class="h-5 w-5"></i></div>
+        <h3 class="font-extrabold text-ink-900">Mathematical foundations</h3>
+      </div>
+      <div class="md-body mt-4">
+        <h4>Rao-Wu rescaled bootstrap</h4>
+        <p>Primary sampling units are resampled with replacement within each stratum, respecting the design of the survey. Rescaled weights are recomputed per replicate and every estimator is re-run, so intervals reflect clustering and stratification rather than assuming simple random sampling.</p>
+        <ul>
+          <li>1,000 replicate draws per estimate</li>
+          <li>Percentile 95% intervals from the replicate distribution</li>
+          <li>Design-aware: PSU and stratum identifiers are carried through the pipeline</li>
+        </ul>
+        <h4>Holm-adjusted weighted Mann-Whitney effect size</h4>
+        <p>Group comparisons report a weighted Mann-Whitney effect size: the probability that a randomly chosen member of one group has a larger value (0.5 means no difference). P-values come from the Rao-Wu bootstrap and are corrected with the Holm step-down procedure across the contrasts in a family. Rank-based, so no normality assumption on skewed quantities such as age gaps.</p>
+        <ul>
+          <li>Rank-based, robust to outliers and ordinal measures</li>
+          <li>Holm correction applied across all comparisons in a lens</li>
+          <li>Monotone association reported via Spearman rank correlation</li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- Limitations -->
+    <article class="rounded-2xl bg-ink-900 border border-ink-800 p-6 shadow-soft text-ink-200">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="h-9 w-9 rounded-xl bg-pookie-400/20 text-pookie-300 flex items-center justify-center"><i data-lucide="shield-alert" class="h-5 w-5"></i></div>
+          <h3 class="font-extrabold text-white">Honest limitations</h3>
+        </div>
+        <span class="font-mono text-[11px] text-ink-400">LIMITATIONS.md</span>
+      </div>
+      <div class="mt-4 rounded-xl bg-black/30 border border-white/10 p-4 font-mono text-[12.5px] leading-relaxed overflow-x-auto">
+<pre class="whitespace-pre-wrap"><span class="text-lilac-300"># Limitations and caveats</span>
+
+<span class="text-pookie-300">## 1. Derived Mahr benchmark</span>
+<span class="text-ink-400">-</span> The Mahr reference is a <span class="text-sage-300">derived gold / CPI benchmark</span>,
+  not an observed transaction value. Treat it as a
+  scale indicator, not a measurement.
+
+<span class="text-pookie-300">## 2. Cross-sectional associations</span>
+<span class="text-ink-400">-</span> HIES is a single-period survey. Every result is an
+  <span class="text-sage-300">association</span>, never a causal effect.
+<span class="text-ink-400">-</span> Cohort and age effects cannot be separated.
+
+<span class="text-pookie-300">## 3. Living-with-parents exclusion</span>
+<span class="text-ink-400">-</span> Couples living with parents are <span class="text-sage-300">not captured</span> as
+  head-spouse pairs in HIES, so the sample excludes
+  them. Findings describe head-spouse households only.
+
+<span class="text-pookie-300">## 4. Interval coverage</span>
+<span class="text-ink-400">-</span> Intervals quantify sampling variance under the
+  design. They do not cover measurement or coding error.
+
+<span class="text-pookie-300">## 5. What HIES cannot show</span>
+<span class="text-ink-400">-</span> No sect, caste or ethnicity variable, so
+  inelasticity by sect or caste is not measured.
+<span class="text-ink-400">-</span> Mahr is <span class="text-sage-300">derived</span> from month-end gold
+  (September has one source) and ten months of CPI.</pre>
+      </div>
+    </article>
+  </div>
+
+  <!-- ELT -->
+  <article class="mt-5 rounded-2xl bg-white border border-ink-200 p-6 sm:p-8 shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-xl bg-sage-100 text-sage-500 flex items-center justify-center"><i data-lucide="database" class="h-5 w-5"></i></div>
+        <h3 class="font-extrabold text-ink-900">ELT engineering pipeline</h3>
+      </div>
+      <span class="rounded-full bg-sage-100 text-sage-500 text-[11px] font-bold px-3 py-1">Idempotent SQL Server MERGE</span>
+    </div>
+
+    <div class="mt-7 grid gap-4 md:grid-cols-[1fr_auto_1fr_auto_1fr] items-stretch">
+      <div class="rounded-2xl border border-pookie-200 bg-pookie-50 p-5">
+        <p class="font-mono text-xs font-bold text-pookie-500">stg</p>
+        <p class="mt-1 font-bold text-ink-900">Staging</p>
+        <ul class="mt-3 space-y-1.5 text-xs text-ink-600">
+          <li class="flex gap-2"><i data-lucide="file-input" class="h-3.5 w-3.5 mt-0.5 shrink-0 text-pookie-400"></i>Cleaned head-spouse pairs staged, then merged</li>
+          <li class="flex gap-2"><i data-lucide="fingerprint" class="h-3.5 w-3.5 mt-0.5 shrink-0 text-pookie-400"></i>SHA-256 hash recorded per file</li>
+          <li class="flex gap-2"><i data-lucide="skip-forward" class="h-3.5 w-3.5 mt-0.5 shrink-0 text-pookie-400"></i>Same file hash, no duplicate lineage row</li>
+        </ul>
+      </div>
+      <div class="hidden md:flex items-center"><div class="pipe-arrow h-[2px] w-8"></div><i data-lucide="chevron-right" class="h-4 w-4 text-ink-300 -ml-1"></i></div>
+      <div class="rounded-2xl border border-lilac-200 bg-lilac-50 p-5">
+        <p class="font-mono text-xs font-bold text-lilac-500">core</p>
+        <p class="mt-1 font-bold text-ink-900">Core</p>
+        <ul class="mt-3 space-y-1.5 text-xs text-ink-600">
+          <li class="flex gap-2"><i data-lucide="git-merge" class="h-3.5 w-3.5 mt-0.5 shrink-0 text-lilac-400"></i>MERGE upserts, safe to re-run</li>
+          <li class="flex gap-2"><i data-lucide="link" class="h-3.5 w-3.5 mt-0.5 shrink-0 text-lilac-400"></i>Head-spouse pairs constructed</li>
+          <li class="flex gap-2"><i data-lucide="scale" class="h-3.5 w-3.5 mt-0.5 shrink-0 text-lilac-400"></i>Weights, PSU and strata carried</li>
+        </ul>
+      </div>
+      <div class="hidden md:flex items-center"><div class="pipe-arrow h-[2px] w-8"></div><i data-lucide="chevron-right" class="h-4 w-4 text-ink-300 -ml-1"></i></div>
+      <div class="rounded-2xl border border-sage-200 bg-sage-50 p-5">
+        <p class="font-mono text-xs font-bold text-sage-500">ana</p>
+        <p class="mt-1 font-bold text-ink-900">Analytics</p>
+        <ul class="mt-3 space-y-1.5 text-xs text-ink-600">
+          <li class="flex gap-2"><i data-lucide="bar-chart-3" class="h-3.5 w-3.5 mt-0.5 shrink-0 text-sage-400"></i>Lens-level result tables</li>
+          <li class="flex gap-2"><i data-lucide="repeat" class="h-3.5 w-3.5 mt-0.5 shrink-0 text-sage-400"></i>Bootstrap intervals and tests</li>
+          <li class="flex gap-2"><i data-lucide="package-check" class="h-3.5 w-3.5 mt-0.5 shrink-0 text-sage-400"></i>Exported to this page by build_site.py</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-6 grid gap-4 lg:grid-cols-2">
+      <div class="rounded-xl bg-ink-900 p-4 font-mono text-[12.5px] leading-relaxed overflow-x-auto">
+<pre class="text-ink-200 whitespace-pre"><span class="text-ink-400">-- core.couples: idempotent upsert from stg.couples_stage</span>
+<span class="text-lilac-300">MERGE</span> core.couples <span class="text-lilac-300">AS</span> t
+<span class="text-lilac-300">USING</span> stg.couples_stage <span class="text-lilac-300">AS</span> s
+   <span class="text-lilac-300">ON</span> t.couple_id = s.couple_id
+<span class="text-lilac-300">WHEN MATCHED THEN</span>
+  <span class="text-lilac-300">UPDATE SET</span> t.weight = s.weight, t.age_gap = s.age_gap, ...
+<span class="text-lilac-300">WHEN NOT MATCHED BY TARGET THEN</span>
+  <span class="text-lilac-300">INSERT</span> (couple_id, weight, ...) <span class="text-lilac-300">VALUES</span> (s.couple_id, s.weight, ...);</pre>
+      </div>
+      <div class="rounded-xl border border-ink-200 bg-ink-50 p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <i data-lucide="clipboard-list" class="h-4 w-4 text-ink-500"></i>
+          <p class="text-sm font-bold text-ink-900">Run log and missingness report</p>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs">
+            <thead><tr class="text-left text-ink-500"><th class="py-1.5 pr-3 font-semibold">Stage</th><th class="py-1.5 pr-3 font-semibold">Recorded</th><th class="py-1.5 font-semibold">Status</th></tr></thead>
+            <tbody class="text-ink-700">
+              <tr class="border-t border-ink-200"><td class="py-2 pr-3 font-mono">ops.data_lineage</td><td class="pr-3">File SHA-256, source row count</td><td><span class="rounded-full bg-sage-100 text-sage-500 font-bold px-2 py-0.5">tracked</span></td></tr>
+              <tr class="border-t border-ink-200"><td class="py-2 pr-3 font-mono">ops.run_log</td><td class="pr-3">Run id, status, bootstrap draws, seed</td><td><span class="rounded-full bg-sage-100 text-sage-500 font-bold px-2 py-0.5">tracked</span></td></tr>
+              <tr class="border-t border-ink-200"><td class="py-2 pr-3 font-mono">out/</td><td class="pr-3">Missingness per variable (CSV report)</td><td><span class="rounded-full bg-sage-100 text-sage-500 font-bold px-2 py-0.5">csv</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  <p class="mt-5 text-xs text-ink-500">Verified on SQL Server for Linux (throwaway database): after two consecutive runs core.couples stayed at 24,628 rows, a bad row was rejected by a CHECK constraint, and weighted estimates computed in SQL matched the Python estimates to six decimals. Not yet tested on Windows SQL Server Express.</p>
+  </article>
+</section>
+
+</main>
+
+<footer class="border-t border-ink-200 bg-white">
+  <div class="max-w-6xl mx-auto px-5 py-8 flex flex-wrap items-center justify-between gap-3 text-xs text-ink-500">
+    <p><b class="text-ink-700">DecodeMatrimony</b> &middot; Source data: Pakistan Bureau of Statistics, HIES 2024-25 & APGJSA.</p>
+    <p>All figures are pre-rendered from the analytics pipeline.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* Generated by scripts/build_site.py from out/results.csv. Do not edit by hand. */
+  var DATA = {"regions": ["Punjab", "Sindh", "Khyber Pakhtunkhwa", "Balochistan"], "hyper": [39.16, 39.68, 50.0, 41.4], "hyperCI": [[38.1, 40.26], [38.1, 41.29], [47.9, 52.1], [38.59, 44.23]], "hypo": [11.85, 8.32, 5.28, 2.3], "hypoCI": [[11.15, 12.5], [7.53, 9.2], [4.41, 6.13], [1.61, 3.11]], "eduLevels": ["None", "Primary", "Secondary", "Higher"], "ageGap": [4.37, 4.78, 5.09, 4.71], "ageGapCI": [[4.26, 4.47], [4.55, 4.98], [4.94, 5.24], [4.42, 5.01]], "wealthLabels": ["Q1 (poorest)", "Q2", "Q3", "Q4", "Q5 (richest)"], "wealth10": [15.13, 15.1, 15.83, 17.25, 17.87], "wealth10CI": [[14.06, 16.23], [14.04, 16.18], [14.7, 16.9], [16.06, 18.43], [16.64, 19.22]], "pairing": ["Homogamous", "Hypergamous", "Hypogamous"], "wifeWork": [24.95, 18.82, 19.83], "wifeWorkCI": [[24.01, 25.89], [17.92, 19.73], [18.12, 21.58]], "adj": [{"level": "Primary", "raw": 0.5282, "adj": 0.5221, "lo": 0.5053, "hi": 0.5383, "p": 0.026}, {"level": "Secondary", "raw": 0.5499, "adj": 0.5372, "lo": 0.525, "hi": 0.5497, "p": 0.003}, {"level": "Higher", "raw": 0.5277, "adj": 0.517, "lo": 0.4975, "hi": 0.5354, "p": 0.1029}], "wealthPair": {"hyper": [33.33, 44.46, 46.27, 42.96, 37.62], "homo": [63.4, 48.23, 42.44, 44.27, 49.23], "hypo": [3.27, 7.31, 11.29, 12.77, 13.15]}, "mahr": {"labels": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct"], "gold": [100.0, 107.56, 93.53, 94.55, 93.03, 83.0, 84.09, 91.07, 86.28, 80.05], "cpi": [100.0, 100.58, 101.86, 102.45, 103.26, 103.85, 104.8, 105.75, 107.1, 108.26], "ratio": [100.0, 106.94, 91.82, 92.29, 90.09, 79.92, 80.24, 86.11, 80.56, 73.94]}, "cards": [{"title": "Working vs non-working wives", "est": "0.460", "lo": "0.451", "hi": "0.470", "note": "Chance a working wife has the larger age gap (0.5 = no difference)."}, {"title": "Marriage timing, wives 30+", "est": "0.009", "lo": "-0.010", "hi": "0.027", "note": "Interval includes 0: no detectable gradient."}, {"title": "Wealth vs age gap", "est": "0.082", "lo": "0.068", "hi": "0.096", "note": "Weighted Spearman: very weak positive."}]};
+
+  var C = {
+    pink: '#e97ba3', pinkSoft: 'rgba(233,123,163,0.85)',
+    lilac: '#a78bdf', lilacSoft: 'rgba(167,139,223,0.85)',
+    sage: '#6fa97c', sageSoft: 'rgba(111,169,124,0.85)',
+    ink: '#1e293b', grid: 'rgba(148,163,184,0.25)', text: '#64748b'
+  };
+
+  /* ---------- Chart.js global look ---------- */
+  Chart.defaults.font.family = "'Plus Jakarta Sans', system-ui, sans-serif";
+  Chart.defaults.font.size = 12;
+  Chart.defaults.color = C.text;
+  Chart.defaults.maintainAspectRatio = false;
+  Chart.defaults.animation.duration = 700;
+
+  var tooltipBase = {
+    backgroundColor: '#0f172a', titleColor: '#fff', bodyColor: '#e2e8f0',
+    padding: 12, cornerRadius: 10, boxPadding: 5, displayColors: true
+  };
+
+  /* ---------- Plugin: 95% CI whiskers (only where an interval exists) ---------- */
+  var ciWhiskers = {
+    id: 'ciWhiskers',
+    afterDatasetsDraw: function (chart) {
+      var ctx = chart.ctx;
+      chart.data.datasets.forEach(function (ds, di) {
+        if (!ds.ci) return;
+        var meta = chart.getDatasetMeta(di);
+        if (meta.hidden) return;
+        var yScale = chart.scales.y;
+        ds.ci.forEach(function (interval, i) {
+          if (!interval) return;
+          var el = meta.data[i];
+          if (!el) return;
+          var x = el.x, yLo = yScale.getPixelForValue(interval[0]), yHi = yScale.getPixelForValue(interval[1]);
+          ctx.save();
+          ctx.strokeStyle = C.ink; ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(x, yLo); ctx.lineTo(x, yHi);
+          ctx.moveTo(x - 6, yLo); ctx.lineTo(x + 6, yLo);
+          ctx.moveTo(x - 6, yHi); ctx.lineTo(x + 6, yHi);
+          ctx.stroke();
+          ctx.restore();
+        });
+      });
+    }
+  };
+
+  function ciLine(ci) {
+    return ci ? '95% CI: ' + ci[0].toFixed(ci[0] < 10 ? 2 : 1) + ' to ' + ci[1].toFixed(ci[1] < 10 ? 2 : 1) : null;
+  }
+
+  var scaleBase = {
+    grid: { color: C.grid, drawTicks: false },
+    border: { display: false }
+  };
+
+  var charts = {};
+
+  /* ---------- Lens 1: grouped bar, hypergamy vs hypogamy ---------- */
+  function buildRegion() {
+    var ctx = document.getElementById('chart-region');
+    charts.region = new Chart(ctx, {
+      type: 'bar',
+      plugins: [ciWhiskers],
+      data: {
+        labels: DATA.regions,
+        datasets: [
+          { label: 'Hypergamy (husband more educated)', data: DATA.hyper, ci: DATA.hyperCI, backgroundColor: C.pinkSoft, borderRadius: 8, borderSkipped: false, maxBarThickness: 46 },
+          { label: 'Hypogamy (wife more educated)',     data: DATA.hypo,  ci: DATA.hypoCI,  backgroundColor: C.lilacSoft, borderRadius: 8, borderSkipped: false, maxBarThickness: 46 }
+        ]
+      },
+      options: {
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'rectRounded', boxWidth: 10, padding: 18 } },
+          tooltip: Object.assign({}, tooltipBase, {
+            callbacks: {
+              label: function (c) { return ' ' + c.dataset.label + ': ' + c.parsed.y.toFixed(1) + '%'; },
+              afterLabel: function (c) {
+                var line = ciLine(c.dataset.ci[c.dataIndex]);
+                return line ? '   ' + line : '';
+              }
+            }
+          })
+        },
+        scales: {
+          x: { grid: { display: false }, border: { display: false } },
+          y: Object.assign({ beginAtZero: true, max: 60, ticks: { callback: function (v) { return v + '%'; }, padding: 8 } }, scaleBase)
+        }
+      }
+    });
+  }
+
+  /* ---------- Lens 2a: line, mean age gap by education ---------- */
+  function buildAgeGap() {
+    var ctx = document.getElementById('chart-agegap');
+    var g = ctx.getContext('2d');
+    var fill = g.createLinearGradient(0, 0, 0, 320);
+    fill.addColorStop(0, 'rgba(167,139,223,0.28)');
+    fill.addColorStop(1, 'rgba(167,139,223,0)');
+
+    charts.agegap = new Chart(ctx, {
+      type: 'line',
+      plugins: [ciWhiskers],
+      data: {
+        labels: DATA.eduLevels,
+        datasets: [{
+          label: 'Weighted mean age gap (years)',
+          data: DATA.ageGap, ci: DATA.ageGapCI,
+          borderColor: C.lilac, backgroundColor: fill, fill: true, tension: 0.35, borderWidth: 3,
+          pointBackgroundColor: '#fff', pointBorderColor: C.lilac, pointBorderWidth: 3, pointRadius: 6, pointHoverRadius: 8
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false },
+          tooltip: Object.assign({}, tooltipBase, {
+            callbacks: {
+              title: function (items) { return 'Education: ' + items[0].label; },
+              label: function (c) { return ' Mean gap: ' + c.parsed.y.toFixed(2) + ' years'; },
+              afterLabel: function (c) {
+                var line = ciLine(c.dataset.ci[c.dataIndex]);
+                return line ? '   ' + line : '';
+              }
+            }
+          })
+        },
+        scales: {
+          x: { grid: { display: false }, border: { display: false } },
+          y: Object.assign({ min: 4, max: 5.5, ticks: { callback: function (v) { return v.toFixed(1); }, padding: 8 },
+                             title: { display: true, text: 'Years', color: C.text } }, scaleBase)
+        }
+      }
+    });
+  }
+
+  /* ---------- Lens 2b: bar, 10+ year gap by wealth ---------- */
+  function buildWealth() {
+    var ctx = document.getElementById('chart-wealth');
+    charts.wealth = new Chart(ctx, {
+      type: 'bar', plugins: [ciWhiskers],
+      data: { labels: DATA.wealthLabels, datasets: [{ label: 'Couples with age gap of 10+ years', data: DATA.wealth10, ci: DATA.wealth10CI, backgroundColor: C.sageSoft, borderRadius: 8, borderSkipped: false, maxBarThickness: 64 }] },
+      options: {
+        plugins: { legend: { display: false }, tooltip: Object.assign({}, tooltipBase, { callbacks: {
+          label: function (c) { return ' ' + c.parsed.y.toFixed(1) + '% of couples have a 10+ year gap'; },
+          afterLabel: function (c) { var l = ciLine(c.dataset.ci[c.dataIndex]); return l ? '   ' + l : ''; } } }) },
+        scales: { x: { grid: { display: false }, border: { display: false } },
+                  y: Object.assign({ beginAtZero: true, max: 22, ticks: { callback: function (v) { return v + '%'; }, padding: 6 } }, scaleBase) }
+      }
+    });
+  }
+
+
+  /* ---------- Lens 3: wife working share by pairing type ---------- */
+  function buildWork() {
+    var ctx = document.getElementById('chart-work');
+    charts.work = new Chart(ctx, {
+      type: 'bar', plugins: [ciWhiskers],
+      data: {
+        labels: DATA.pairing,
+        datasets: [{
+          label: 'Wife working (%)',
+          data: DATA.wifeWork, ci: DATA.wifeWorkCI,
+          backgroundColor: [C.sageSoft, C.pinkSoft, C.lilacSoft], borderRadius: 10, borderSkipped: false, maxBarThickness: 90
+        }]
+      },
+      options: {
+        plugins: {
+          legend: { display: false },
+          tooltip: Object.assign({}, tooltipBase, {
+            callbacks: {
+              title: function (items) { return items[0].label + ' couples'; },
+              label: function (c) { return ' Wife working: ' + c.parsed.y.toFixed(1) + '%'; },
+              afterLabel: function (c) { var l = ciLine(c.dataset.ci[c.dataIndex]); return l ? '   ' + l : ''; }
+            }
+          })
+        },
+        scales: {
+          x: { grid: { display: false }, border: { display: false } },
+          y: Object.assign({ beginAtZero: true, max: 30, ticks: { callback: function (v) { return v + '%'; }, padding: 8 } }, scaleBase)
+        }
+      }
+    });
+
+    // Companion stat cards
+    var tones = [
+      { bg: 'bg-sage-50', border: 'border-sage-200', txt: 'text-sage-500' },
+      { bg: 'bg-pookie-50', border: 'border-pookie-200', txt: 'text-pookie-500' },
+      { bg: 'bg-lilac-50', border: 'border-lilac-200', txt: 'text-lilac-500' }
+    ];
+    var host = document.getElementById('work-cards');
+    DATA.pairing.forEach(function (name, i) {
+      var d = document.createElement('div');
+      d.className = 'rounded-xl border p-4 ' + tones[i].bg + ' ' + tones[i].border;
+      d.innerHTML = '<p class="text-xs font-bold uppercase tracking-wider ' + tones[i].txt + '">' + name + '</p>' +
+                    '<p class="mt-1 text-2xl font-extrabold text-ink-900">' + DATA.wifeWork[i].toFixed(1) + '%</p>' +
+                    '<p class="text-xs text-ink-500">wives working</p><p class="text-[11px] text-ink-400">95% CI ' + DATA.wifeWorkCI[i][0].toFixed(1) + ' to ' + DATA.wifeWorkCI[i][1].toFixed(1) + '</p>';
+      host.appendChild(d);
+    });
+  }
+
+  /* ---------- Adjusted vs unadjusted education contrast (table) ---------- */
+  function buildAdj() {
+    var host = document.getElementById('adj-table');
+    if (!host) return;
+    var rows = DATA.adj.map(function (r) {
+      var p = r.p < 0.001 ? '< 0.001' : r.p.toFixed(3);
+      var ns = r.p >= 0.05 ? ' <span class="text-ink-400">(not significant)</span>' : '';
+      return '<tr class="border-t border-ink-200"><td class="py-2 pr-3 font-semibold">' + r.level + '</td><td class="pr-3">' + r.raw.toFixed(3) +
+             '</td><td class="pr-3">' + r.adj.toFixed(3) + ' (' + r.lo.toFixed(3) + ' to ' + r.hi.toFixed(3) + ')</td><td>' + p + ns + '</td></tr>';
+    }).join('');
+    host.innerHTML = '<p class="text-xs font-bold text-ink-900 mb-2">Chance a wife at this education level has the larger age gap vs uneducated wives (0.5 = no difference)</p>' +
+      '<table class="w-full text-xs text-left text-ink-700"><thead><tr class="text-ink-500"><th class="py-1.5 pr-3 font-semibold">Education</th><th class="pr-3 font-semibold">Unadjusted</th>' +
+      '<th class="pr-3 font-semibold">Adjusted for age band and province (95% CI)</th><th class="font-semibold">Holm p</th></tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  /* ---------- More findings: wealth pairing, Mahr benchmark, headline cards ---------- */
+  function buildMore() {
+    var wp = DATA.wealthPair;
+    charts.wealthpair = new Chart(document.getElementById('chart-wealthpair'), {
+      type: 'bar',
+      data: { labels: DATA.wealthLabels, datasets: [
+        { label: 'Husband more educated', data: wp.hyper, backgroundColor: C.pinkSoft },
+        { label: 'Same education level', data: wp.homo, backgroundColor: C.sageSoft },
+        { label: 'Wife more educated (derived)', data: wp.hypo, backgroundColor: C.lilacSoft } ] },
+      options: {
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 10, padding: 14 } },
+                   tooltip: Object.assign({}, tooltipBase, { callbacks: { label: function (c) { return ' ' + c.dataset.label + ': ' + c.parsed.y.toFixed(1) + '%'; } } }) },
+        scales: { x: { stacked: true, grid: { display: false }, border: { display: false } },
+                  y: Object.assign({ stacked: true, max: 100, ticks: { callback: function (v) { return v + '%'; } } }, scaleBase) }
+      }
+    });
+    var m = DATA.mahr;
+    charts.mahr = new Chart(document.getElementById('chart-mahr'), {
+      type: 'line',
+      data: { labels: m.labels, datasets: [
+        { label: 'Gold (month-end quote)', data: m.gold, borderColor: C.pink, backgroundColor: C.pink, tension: 0.25, pointRadius: 4 },
+        { label: 'CPI', data: m.cpi, borderColor: C.lilac, backgroundColor: C.lilac, tension: 0.25, pointRadius: 4 },
+        { label: 'Gold divided by CPI', data: m.ratio, borderColor: C.sage, backgroundColor: C.sage, borderDash: [6, 4], tension: 0.25, pointRadius: 4 } ] },
+      options: {
+        interaction: { mode: 'index', intersect: false },
+        plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 10, padding: 14 } },
+                   tooltip: Object.assign({}, tooltipBase, { callbacks: { label: function (c) { return ' ' + c.dataset.label + ': ' + c.parsed.y.toFixed(1); } } }) },
+        scales: { x: { grid: { display: false }, border: { display: false } },
+                  y: Object.assign({ min: 70, max: 115, ticks: { padding: 6 } }, scaleBase) }
+      }
+    });
+    var host = document.getElementById('more-cards');
+    DATA.cards.forEach(function (c) {
+      var d = document.createElement('div');
+      d.className = 'rounded-xl border border-ink-200 bg-white p-4 shadow-soft';
+      d.innerHTML = '<p class="text-xs font-bold uppercase tracking-wider text-lilac-500">' + c.title + '</p>' +
+        '<p class="mt-1 text-2xl font-extrabold text-ink-900">' + c.est + '</p>' +
+        '<p class="text-[11px] text-ink-400">95% CI ' + c.lo + ' to ' + c.hi + '</p><p class="mt-1 text-xs text-ink-500">' + c.note + '</p>';
+      host.appendChild(d);
+    });
+  }
+
+  /* ---------- Tabs: click + arrow-key navigation ---------- */
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  var built = { 1: true, 2: false, 3: false };
+
+  function activate(tab, focus) {
+    var n = tab.id.split('-')[1];
+    tabs.forEach(function (t) {
+      var on = t === tab;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+      document.getElementById('panel-' + t.id.split('-')[1]).classList.toggle('active', on);
+    });
+    if (focus) tab.focus();
+    // Charts in hidden panels have zero size; build lazily and resize on show.
+    if (!built[n]) {
+      if (n === '2') { buildAgeGap(); buildWealth(); }
+      if (n === '3') { buildWork(); }
+      built[n] = true;
+    }
+    Object.keys(charts).forEach(function (k) { charts[k].resize(); });
+  }
+
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener('click', function () { activate(tab, false); });
+    tab.addEventListener('keydown', function (e) {
+      var next = null;
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') next = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') next = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (e.key === 'Home') next = tabs[0];
+      if (e.key === 'End') next = tabs[tabs.length - 1];
+      if (next) { e.preventDefault(); activate(next, true); }
+    });
+  });
+
+  /* ---------- Init ---------- */
+  function init() {
+    buildRegion();
+    buildAdj();
+    buildMore();
+    if (window.lucide) lucide.createIcons();
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+</body>
+</html>

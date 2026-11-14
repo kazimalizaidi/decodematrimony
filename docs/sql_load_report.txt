@@ -1,0 +1,25 @@
+🎀 table counts
+✨ core.couples: 24,628
+✨ ana.results (all runs): 102
+✨ ana.vw_latest_results: 51
+✨ ana.mahr_benchmark: 10
+✨ ops.run_log SUCCESS: 2
+✨ ops.run_log FAILED: 0
+✨ ops.data_lineage: 1
+✨ core.couples == 24,628: True
+🎀 integrity checks
+✨ no non-positive weights: True
+✨ no orphan results: True
+✨ view matches latest successful run: True
+🎀 constraint test (a bad row must be rejected and rolled back)
+✨ CHECK constraint rejected wife_age=5: True
+🎀 SQL vs Python cross-check (weighted estimates must agree)
+✨ share_hypergamous[khyber pakhtunkhwa] SQL=0.499977 Python=0.499977 match=True
+✨ share_hypergamous[balochistan] SQL=0.414005 Python=0.414005 match=True
+✨ share_hypergamous[punjab] SQL=0.391557 Python=0.391557 match=True
+✨ share_hypergamous[sindh] SQL=0.396767 Python=0.396767 match=True
+✨ age_gap_mean_years[no_education] SQL=4.368422 Python=4.368422 match=True
+✨ age_gap_mean_years[higher] SQL=4.707918 Python=4.707918 match=True
+✨ age_gap_mean_years[primary] SQL=4.775022 Python=4.775022 match=True
+✨ age_gap_mean_years[secondary] SQL=5.093357 Python=5.093357 match=True
+✨ ALL CHECKS PASSED

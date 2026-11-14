@@ -1,0 +1,11 @@
+data/raw/*
+!data/raw/.gitkeep
+out/
+.env
+__pycache__/
+.pytest_cache/
+
+venv/
+.venv/
+.mypy_cache/
+*.zip

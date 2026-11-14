@@ -1,0 +1,6 @@
+{
+  "case_id": "caseid", "weight": "v005", "psu": "v021", "strata": "v022",
+  "wife_age": "v012", "husband_age": "mv012", "wife_edu": "v106", "husband_edu": "mv106",
+  "wealth": "v190", "region": "v024", "wife_age_first_union": "v511", "wife_working": "v714",
+  "wife_ethnicity": null, "husband_ethnicity": null
+}

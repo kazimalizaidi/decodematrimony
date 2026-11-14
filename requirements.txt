@@ -1,0 +1,10 @@
+pandas>=2.1
+numpy>=1.26
+scipy>=1.11
+nltk>=3.8
+scrapy>=2.11
+sqlalchemy>=2.0
+pyodbc>=5.0
+pytest>=8.0
+mypy>=1.8
+pandas-stubs
